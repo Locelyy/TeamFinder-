@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamFinder Chat App & Matchmaking Lobby</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= AUTH CONTAINER ================= -->
+    <div id="auth-section" class="auth-container glass-panel">
+        <div class="auth-header">
+            <h1 id="auth-title">TeamFinder Chat</h1>
+            <p id="auth-subtitle">Login to connect with rooms and matchmaking lobbies</p>
+        </div>
+
+        <div id="auth-alert" class="alert-box"></div>
+
+        <form id="auth-form" onsubmit="event.preventDefault();">
+            <div class="form-group">
+                <label for="username-input">Username</label>
+                <input type="text" id="username-input" class="input-field" placeholder="Enter your username" required
+                    autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password-input">Password</label>
+                <input type="password" id="password-input" class="input-field" placeholder="Enter your password"
+                    required autocomplete="current-password">
+            </div>
+
+            <button type="submit" id="auth-submit-btn" class="btn">
+                <span>Login</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span id="auth-toggle-msg">Don't have an account?</span>
+            <a href="#" id="auth-toggle-link">Register here</a>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP WORKSPACE ================= -->
+    <div id="app-section" class="app-container">
+
+        <!-- SIDEBAR (LEFT) -->
+        <aside class="sidebar glass-panel">
+            <div class="sidebar-header">
+                <h2>TeamFinder</h2>
+                <button id="logout-btn" class="add-room-btn" title="Logout"
+                    style="font-size: 0.9rem; padding: 4px 8px;">Logout</button>
+            </div>
+
+            <div class="user-profile-badge">
+                <div id="user-avatar" class="avatar">U</div>
+                <div class="profile-info">
+                    <span id="user-display-name" class="profile-name">Username</span>
+                    <span id="user-display-mmr" class="profile-mmr">MMR: 1000</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>Rooms</span>
+                    <button id="open-create-room-modal" class="add-room-btn" title="Create Room">+</button>
+                </div>
+                <div id="room-list-container" class="list-container">
+                    <!-- Dynamic Rooms List -->
+                </div>
+            </div>
+
+            <div class="sidebar-section" style="border-top: 1px solid var(--panel-border);">
+                <div class="sidebar-section-title">
+                    <span>Online Users</span>
+                </div>
+                <div id="online-users-container" class="list-container">
+                    <!-- Dynamic Online List -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- CHAT CONSOLE (CENTER) -->
+        <main class="chat-pane glass-panel">
+            <!-- Active Conversation Header -->
+            <div class="chat-header">
+                <div class="chat-title-info">
+                    <h3 id="active-chat-title">Select a room or user</h3>
+                    <span id="active-chat-status" class="chat-subtitle">Join a conversation to start messaging</span>
+                </div>
+                <button id="leave-room-btn" class="btn btn-secondary"
+                    style="display: none; margin-left: auto; width: auto; padding: 8px 16px; font-size: 0.85rem;">Leave
+                    Room</button>
+            </div>
+
+            <!-- Messages Window -->
+            <div id="chat-messages-container" class="chat-messages">
+                <div class="message-system">Select a channel from the left sidebar to start typing.</div>
+            </div>
+
+            <!-- Inputs and Actions -->
+            <div class="chat-input-area">
+                <div class="input-container-row">
+
+                    <textarea id="chat-message-input" class="message-input" placeholder="Type a message..."
+                        disabled></textarea>
+
+                    <button id="send-message-btn" class="send-btn" title="Send Message" disabled>
+                        <span>➔</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- MATCHMAKING DASHBOARD (RIGHT) -->
+        <aside class="matchmaking-panel glass-panel matchmaking-panel-sidebar">
+            <div class="matchmaking-pane-header">
+                <h3>Matchmaking Lobby</h3>
+            </div>
+
+            <div class="matchmaking-pane-body">
+                <div class="mmr-display-card">
+                    <div id="matchmaker-user-mmr" class="mmr-number">1000</div>
+                    <div class="mmr-label">Your Skill Rating</div>
+                </div>
+
+                <div id="matchmaking-status-card" class="queue-card" style="display: none;">
+                    <div class="queue-spinner"></div>
+                    <div class="queue-timer">00:00</div>
+                    <span id="queue-status-text" style="font-size: 0.85rem; color: var(--text-muted);">Finding players
+                        with similar skill...</span>
+                </div>
+
+                <button id="matchmaking-action-btn" class="btn" style="margin-top: auto;">
+                    <span>Find Match</span>
+                </button>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- ================= CREATE ROOM MODAL ================= -->
+    <div id="create-room-modal" class="modal-overlay">
+        <div class="modal-box glass-panel">
+            <h3 class="modal-title">Create New Room</h3>
+            <div class="form-group">
+                <label for="new-room-name-input">Room Name</label>
+                <input type="text" id="new-room-name-input" class="input-field" placeholder="Enter room name"
+                    maxlength="30">
+            </div>
+            <div class="modal-actions">
+                <button id="close-create-room-modal" class="btn btn-secondary">Cancel</button>
+                <button id="create-room-submit-btn" class="btn">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MATCHING COMPLETED OVERLAY ================= -->
+    <div id="match-found-overlay" class="matched-alert-overlay">
+        <div class="matched-glow-ring">
+            <div class="matched-inner-circle">
+                <div class="matched-vs-text">MATCH!</div>
+            </div>
+        </div>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin-bottom: 8px;">Opponent Found</h2>
+        <p id="matched-opponent-info" style="color: var(--text-muted); margin-bottom: 24px;">VS User (MMR 1050)</p>
+        <div
+            style="font-size: 0.9rem; color: var(--accent-secondary); animation: spin 2s linear infinite; width: 20px; height: 20px; border: 2px solid transparent; border-top-color: currentColor; border-radius: 50%; display: inline-block;">
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-dark); margin-top: 8px;">Connecting to arena room...</p>
+    </div>
+
+    <!-- ================= EMOJI SELECTOR OVERLAY ================= -->
+    <div id="emoji-picker-overlay" class="emoji-picker-popup">
+        <div class="emoji-option" data-emoji="👍">👍</div>
+        <div class="emoji-option" data-emoji="❤️">❤️</div>
+        <div class="emoji-option" data-emoji="😂">😂</div>
+        <div class="emoji-option" data-emoji="😮">😮</div>
+        <div class="emoji-option" data-emoji="😢">😢</div>
+        <div class="emoji-option" data-emoji="🔥">🔥</div>
+    </div>
+
+    <script src="client.js"></script>
+</body>
+
+</html>
